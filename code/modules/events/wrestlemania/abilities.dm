@@ -187,3 +187,44 @@
 			var/obj/item/bananapeel/new_peel = new /obj/item/bananapeel(picked_turf)
 			animate_buff_in(new_peel)
 		return FALSE
+
+//Bartimeus stuff
+/datum/targetable/wrestlemania/cast_lightning
+	name = "Summon lightning"
+	desc = "Strike down a bolt of lightning. You totally meant to do that"
+	cooldown = 1 SECOND
+	targeted = 1
+	target_anything = 1
+	icon = 'icons/mob/spell_buttons.dmi'
+	icon_state = "grasp"
+
+	cast(atom/target)
+		var/turf/T = null
+		if (!isturf(target))
+			T = get_turf(target)
+		else
+			T = target
+		if (!T)
+			boutput(holder.owner, "<span class='notice'>That is not a valid target</span>")
+			return TRUE
+		lightning_bolt_weak(T, holder.owner)
+		return FALSE
+
+//Copy paste from regular "lightning_bolt()" proc, but weak and with little damage
+/proc/lightning_bolt_weak(atom/center, var/caster)
+	showlightning_bolt(center)
+	playsound(center, 'sound/effects/lightning_strike.ogg', 70, 1)
+	elecflash(center,0, power=1, exclude_center = 0)
+
+	for(var/mob/living/M in range(1,center))
+		if (M.bioHolder?.HasEffect("resist_electric"))
+			boutput(M, "<span class='notice'>The lightning bolt arcs around you harmlessly.</span>")
+		else if (check_target_immunity(M))
+			continue
+		else
+			M.TakeDamage("chest", 0, 5, 0, DAMAGE_BURN)
+			boutput(M, "<span class='alert'>You feel a strong electric shock!</span>")
+			M.do_disorient(stamina_damage = 10, weakened = 0, stunned = 0, disorient = 5)
+			if (M.loc == center)
+				M.TakeDamage("chest", 0, 5, 0, DAMAGE_BURN)
+				M.emote("scream")
