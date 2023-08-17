@@ -38,3 +38,9 @@
 		HH.suffix = "-R"
 		HH.icon_state = "handr"
 		HH.limb_name = "right arm"
+
+	death(gibbed)
+		. = ..()
+		SPAWN(3 SECONDS)
+			spawn_beam(src.loc)
+			qdel(src)

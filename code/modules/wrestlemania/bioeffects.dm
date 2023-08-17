@@ -10,11 +10,11 @@
 
 	OnLife(var/mult)
 		if(..()) return
-		for(var/mob/living/carbon/C in view(4,get_turf(owner)))
+		for(var/mob/living/carbon/C in view(3,get_turf(owner)))
 			if (C == owner)
 				continue
 			else
-				if (prob(15))
+				if (prob(7))
 					switch (pick(1, 2, 3))
 						if (1)
 							C.emote(pick("cough", "wheeze", "mumble", "sneeze"))

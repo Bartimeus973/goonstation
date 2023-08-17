@@ -19,7 +19,7 @@
 				if (G.affecting == M)
 					return TRUE
 			playsound(holder.owner.loc, 'sound/impact_sounds/Flesh_Tear_2.ogg', 70, 0, 0)
-			holder.owner.visible_message("<span class='alert'><B>[holder.owner] bites down hard on [M]'s arm and doesnt let go!</B></span>")
+			holder.owner.visible_message("<span class='alert'>[holder.owner] bites down hard on [M]'s arm and doesnt let go!</span>")
 			var/obj/item/grab/G = new /obj/item/grab(holder.owner, holder.owner, M)
 			holder.owner.put_in_hand(G, holder.owner.hand)
 			M.changeStatus("stunned", 2 SECONDS)
@@ -35,7 +35,7 @@
 
 /datum/targetable/wrestlemania/death_roll
 	name = "Alloy Gator Death Roll"
-	desc = "Start twisting around while holding someone's limb in your mouth. Very messy."
+	desc = "Rip apart whoever you are holding onto."
 	icon = 'icons/mob/werewolf_ui.dmi'
 	icon_state = "feast"
 	targeted = 0
@@ -56,7 +56,7 @@
 
 		T.set_loc(C.loc)
 		T.emote("scream")
-		C.visible_message("<span class='alert'>[C] begins rapidly spinning around while holding [T]'s arm tightly in their mouth, bringing both of them to the floor!</span>")
+		C.visible_message("<span class='alert'>[C] begins rapidly spinning around while holding [T]'s arm tightly in [his_or_her(holder.owner)] mouth, bringing both of them to the floor!</span>")
 		T.changeStatus("weakened", 6 SECONDS)
 		C.changeStatus("weakened", 4 SECONDS)
 		T.force_laydown_standup()
@@ -70,7 +70,7 @@
 			if ((i % 4) == 0)
 				bleed(T, 10, 5, T.loc)
 				playsound(holder.owner.loc, pick('sound/impact_sounds/Flesh_Tear_1.ogg', 'sound/impact_sounds/Flesh_Tear_2.ogg', 'sound/impact_sounds/Flesh_Tear_3.ogg'), 70, 0, 0)
-				random_brute_damage(T, 5)
+				random_brute_damage(T, 4)
 			sleep(0.15 SECONDS)
 		T.pixel_y = 0
 		T.pixel_x = 0
@@ -90,7 +90,7 @@
 		if (!isalive(T))
 			boutput("<span class='notice'>They are already sitting down.</span>")
 			return TRUE
-		var/speechpopupstyle = "font-size: 16px;"
+		var/speechpopupstyle = "font-size: 18px;"
 		var/map_text = make_chat_maptext(holder.owner.loc, "SIT DOWN, CLOWN!", "color: [rgb(53, 7, 255)];" + speechpopupstyle, alpha = 255, time = 4 SECONDS)
 		var/list/mob/living/mob_list = list()
 		for (var/mob/living/M in hearers(holder.owner))
@@ -103,7 +103,7 @@
 					M.say("SIT DOWN, CLOWN!")
 			T.changeStatus("weakened", 5 SECONDS)
 			T.force_laydown_standup()
-			T.visible_message("<span class='alert'>[T] falls to their knees, submitting to authority.</span>", "<span class='alert'>Your knees buckle under you, such a shout is commending immediate attention!</span>")
+			T.visible_message("<span class='alert'>[T] falls to [his_or_her(T)] knees, submitting to authority.</span>", "<span class='alert'>Your knees buckle under you, such a shout is commending immediate attention!</span>")
 		return FALSE
 
 /datum/targetable/wrestlemania/summon_baseball_bat
@@ -121,16 +121,18 @@
 		the_bat.alpha = 0
 		the_bat.pixel_y = 128
 		animate(the_bat, alpha=255, time=0.5 SECONDS)
-		animate(the_bat, time = 1.2 SECONDS, pixel_y = 0, flags = ANIMATION_PARALLEL)
-		animate(the_bat, time = 1.2 SECONDS,  flags = ANIMATION_PARALLEL)
+		animate(the_bat, time = 1 SECONDS, pixel_y = 0, flags = ANIMATION_PARALLEL)
+		animate(the_bat, time = 1 SECONDS,  flags = ANIMATION_PARALLEL)
 		animate(time= 2 DECI SECONDS, pixel_y = 6, easing = SINE_EASING | EASE_OUT)
 		animate(time = 2 DECI SECONDS, pixel_y = 0, , easing = SINE_EASING | EASE_IN)
 		return FALSE
 
 //Emerald stuff
 /datum/targetable/wrestlemania/summon_throne
-	name = "Summon throne/Unsummon throne"
+	name = "Summon/Unsummon throne"
 	desc = "Summon your magnificent throne from thin air to your subject's delight or send it back where it came from."
+	icon = 'icons/mob/spell_buttons.dmi'
+	icon_state = "forcewall"
 	cooldown = 5 SECONDS
 	targeted = 0
 	target_anything = 0
@@ -197,7 +199,7 @@
 		lightning_bolt_weak(T, holder.owner)
 		return FALSE
 
-//Copy paste from regular "lightning_bolt()" proc, but weak and with little damage
+//Copy paste from regular "lightning_bolt()" proc, but weak, no lingering lightning, and no bot explosion
 /proc/lightning_bolt_weak(atom/center, var/caster)
 	showlightning_bolt(center)
 	playsound(center, 'sound/effects/lightning_strike.ogg', 70, 1)
@@ -211,7 +213,7 @@
 		else
 			M.TakeDamage("chest", 0, 5, 0, DAMAGE_BURN)
 			boutput(M, "<span class='alert'>You feel a strong electric shock!</span>")
-			M.do_disorient(stamina_damage = 10, weakened = 0, stunned = 0, disorient = 5)
+			M.do_disorient(stamina_damage = 10, weakened = 0, stunned = 0, disorient = 2 SECONDS)
 			if (M.loc == center)
 				M.TakeDamage("chest", 0, 5, 0, DAMAGE_BURN)
 				M.emote("scream")
@@ -220,13 +222,15 @@
 /datum/targetable/wrestlemania/throw_coins
 	name = "Monetary gambit"
 	desc = "Years of numismatism has taught you a thing or two about the practicality of throwing coins around"
+	icon = 'icons/mob/spell_buttons.dmi'
+	icon_state = "Slam"
 	cooldown = 15 SECONDS
 	targeted = 0
 	target_anything = 0
 
 	cast(atom/target)
 		holder.owner.visible_message("<span class='notice'>[holder.owner] reaches into their pockets and pulls out a small handfull of ancient coins, then throws them around [himself_or_herself(holder.owner)]</span>")
-		for (var/i in 1 to 10)
+		for (var/i in 1 to 9)
 			var/obj/item/coin/new_coin = new /obj/item/coin(holder.owner.loc)
 			var/throw_direction = get_edge_target_turf(holder.owner, i)
 			new_coin.throw_at(throw_direction, rand(2,3), 1, throw_type = THROW_NORMAL)
@@ -236,6 +240,8 @@
 /datum/targetable/wrestlemania/glitter_cloud
 	name = "Glitter storm"
 	desc = "OH GOD THAT'S WAY TOO MUCH GLITTER!"
+	icon = 'icons/mob/spell_buttons.dmi'
+	icon_state = "prismspray"
 	cooldown = 20 SECONDS
 	targeted = 0
 	target_anything = 0
@@ -254,13 +260,13 @@
 
 //DIO Chasek stuff
 /datum/targetable/wrestlemania/pie_throw
-	name = "Forbidden pies"
-	desc = "Throw a special pie at some idiot."
+	name = "Throw pie"
+	desc = "Where are you even getting these?"
 	icon = 'icons/mob/spell_buttons.dmi'
 	icon_state = "lesser"
 	targeted = 1
 	target_anything = 1
-	cooldown = 20 SECONDS
+	cooldown = 15 SECONDS
 	var/datum/projectile/pie/chem_ingest/pie_proj = new
 
 	cast(atom/target)
@@ -275,6 +281,8 @@
 /datum/targetable/wrestlemania/reinforcements
 	name = "Reinforcements"
 	desc = "Call in a favor from a buddy to teach someone a lesson"
+	icon = 'icons/mob/spell_buttons.dmi'
+	icon_state = "blink"
 	cooldown = 90 SECONDS
 	targeted = 1
 	target_anything = 0
@@ -289,6 +297,8 @@
 		spawn_beam(reinforcement)
 		holder.owner.visible_message("<span class='alert'>[holder.owner] snaps [his_or_her(holder.owner)] fingers and points at [H]. A syndicate wrestler appears and rushes at the target!</span>")
 		holder.owner.emote("snap")
+		SPAWN(1.5 SECOND)
+			reinforcement.say(pick("On it, boss!", "Layin' down the pain!", "Get some!", "Tag in!"))
 		SPAWN(20 SECONDS)
 			if (reinforcement && reinforcement.loc)
 				reinforcement.visible_message("<span class='alert'>[reinforcement] is warped away!</span>")

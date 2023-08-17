@@ -3,6 +3,8 @@
 	var/mob/living/my_king = null
 
 	buckle_in(mob/living/to_buckle, mob/living/user, var/stand = 0)
+		if (!can_buckle(to_buckle,user))//Double check with the parent call, but it's probably okay?
+			return FALSE
 		if (to_buckle != my_king)
 			to_buckle.visible_message("<span class='alert'>[to_buckle] attempts to sit down on the throne but they slip off instead!</span>")
 			ThrowRandom(to_buckle, 3, 1)
@@ -13,7 +15,6 @@
 		..()
 
 //Solenoid stuff
-
 //It was simpler to make a reskinned sword which looks and swings like a crowbar than making a crowbar that has a katana dash
 /obj/item/swords/katana/gordon
 	name = "worn stolen crowbar"
