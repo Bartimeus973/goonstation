@@ -1095,6 +1095,8 @@ var/datum/preMapLoad/preMapLoad = new
 #include "code\modules\events\start\critter_infestation.dm"
 #include "code\modules\events\start\viscera_cleanup.dm"
 #include "code\modules\events\wrestlemania\abilities.dm"
+#include "code\modules\events\wrestlemania\bioeffects.dm"
+#include "code\modules\events\wrestlemania\items.dm"
 #include "code\modules\fishing\fish.dm"
 #include "code\modules\fishing\fishing_gear.dm"
 #include "code\modules\fishing\fishing_spots.dm"

@@ -228,3 +228,39 @@
 			if (M.loc == center)
 				M.TakeDamage("chest", 0, 5, 0, DAMAGE_BURN)
 				M.emote("scream")
+
+//Solenoid stuff
+/datum/targetable/wrestlemania/throw_coins
+	name = "Monetary gambit"
+	desc = "Years of numismatism has taught you a thing or two about the practicality of throwing coins around"
+	cooldown = 15 SECONDS
+	targeted = 0
+	target_anything = 0
+
+	cast(atom/target)
+		holder.owner.visible_message("<span class='notice'>[holder.owner] reaches into their pockets and pulls out a small handfull of ancient coins, then throws them around [himself_or_herself(holder.owner)]</span>")
+		for (var/i in 1 to 10)
+			var/obj/item/coin/new_coin = new /obj/item/coin(holder.owner.loc)
+			var/throw_direction = get_edge_target_turf(holder.owner, i)
+			new_coin.throw_at(throw_direction, rand(2,3), 1, throw_type = THROW_NORMAL)
+		return FALSE
+
+//Luminous aether stuff
+/datum/targetable/wrestlemania/glitter_cloud
+	name = "Glitter storm"
+	desc = "OH GOD THAT'S WAY TOO MUCH GLITTER!"
+	cooldown = 20 SECONDS
+	targeted = 0
+	target_anything = 0
+
+	cast(atom/target)
+		var/turf/T = get_turf(holder.owner)
+		T?.fluid_react_single("sparkles", 10, airborne = 1)
+		holder.owner.visible_message("<span class='notice'>[holder.owner] does a little twirl and a MASSIVE cloud of rainbow glitter comes off of them!</span>", "<span class='notice'>You do a little twirl and unleash some of your glitter power!</span>")
+		return FALSE
+
+/datum/targetable/geneticsAbility/bigpuke/glitter
+	name = "Vomit glitter"
+	desc = "AAHHH, IT'S IN MY MOUTH! BLLLAARRFGHGH!"
+	cooldown = 20 SECONDS
+	puke_reagents = list("glitter" = 20, "lumen" = 20)
