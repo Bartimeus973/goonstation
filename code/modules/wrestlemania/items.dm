@@ -29,3 +29,40 @@
 	attack_verbs = "smashes"
 	hitsound = 'sound/impact_sounds/Generic_Hit_1.ogg'
 	custom_suicide = 0
+
+//Smallsandman stuff
+/obj/item/clothing/head/helmet/space/nanotrasen/pilot/hunter
+	icon = 'code/modules/wrestlemania/icons/items/clothing.dmi'
+	wear_image_icon = 'code/modules/wrestlemania/icons/mob/head.dmi'
+	icon_state = "hunter_helm"
+	item_state = "hunter_helm"
+	desc = "A modified NanoTrasen pilot helmet, it's visor is slightly cracked and you can just make out a flickering hud on the inside."
+
+/obj/item/clothing/under/misc/turds/hunter
+	desc = "A strange looking jumpsuit, seems worn down."
+	icon = 'code/modules/wrestlemania/icons/items/clothing.dmi'
+	wear_image_icon = 'code/modules/wrestlemania/icons/mob/clothing.dmi'
+	icon_state = "hunter_js"
+	item_state = "hunter_js"
+
+/obj/item/clothing/suit/space/hunter
+	name = "worn space suit"
+	desc = "This space suit is definitely stolen, It's been painted Orange and it's NT reliaga has been removed and replaced with the initials 'JH'."
+	icon = 'code/modules/wrestlemania/icons/items/clothing.dmi'
+	wear_image_icon = 'code/modules/wrestlemania/icons/mob/clothing.dmi'
+	icon_state = "hunter_suit"
+	item_state = "hunter_suit"
+
+/obj/item/clothing/mask/gas/hunter
+	desc = "There are visible scratches on the top of the mask, suggesting it's visor was forcibly removed."
+	icon = 'code/modules/wrestlemania/icons/items/clothing.dmi'
+	wear_image_icon = 'code/modules/wrestlemania/icons/mob/clothing.dmi'
+	icon_state = "hunter_mask"
+	item_state = "hunter_mask"
+
+/obj/item/clothing/gloves/swat/hunter
+	desc = "A pair of orange gloves for hand safety and added grip to help hold items."
+	icon = 'code/modules/wrestlemania/icons/items/clothing.dmi'
+	wear_image_icon = 'code/modules/wrestlemania/icons/mob/hands.dmi'
+	icon_state = "hunter_gloves"
+	item_state = "hunter_gloves"
