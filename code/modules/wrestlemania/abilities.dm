@@ -270,3 +270,28 @@
 			P.launch()
 		holder.owner.visible_message("<span class='alert'>[holder.owner] pulls a pie out of [his_or_her(holder.owner)] pockets and lobs it forward!</span>")
 		return FALSE
+
+//smallsandman stuff
+/datum/targetable/wrestlemania/reinforcements
+	name = "Reinforcements"
+	desc = "Call in a favor from a buddy to teach someone a lesson"
+	cooldown = 90 SECONDS
+	targeted = 1
+	target_anything = 0
+
+	cast(atom/target)
+		if (!ishuman(target))
+			boutput(holder.owner, "<span class='notice'>You have to target a human!</span>")
+			return TRUE
+		var/mob/living/carbon/human/H = target
+		var/mob/living/critter/human/syndicate/wrestling/reinforcement = new /mob/living/critter/human/syndicate/wrestling(holder.owner.loc)
+		reinforcement.target = H
+		spawn_beam(reinforcement)
+		holder.owner.visible_message("<span class='alert'>[holder.owner] snaps [his_or_her(holder.owner)] fingers and points at [H]. A syndicate wrestler appears and rushes at the target!</span>")
+		holder.owner.emote("snap")
+		SPAWN(20 SECONDS)
+			if (reinforcement && reinforcement.loc)
+				reinforcement.visible_message("<span class='alert'>[reinforcement] is warped away!</span>")
+				spawn_beam(reinforcement.loc)
+				qdel(reinforcement)
+		return FALSE
