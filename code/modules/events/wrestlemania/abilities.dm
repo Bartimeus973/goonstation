@@ -151,19 +151,6 @@
 			our_throne.Scale(1.5, 1.5)
 		return FALSE
 
-/obj/stool/chair/comfy/throne_gold/wrestler
-	var/mob/living/my_king = null
-
-	buckle_in(mob/living/to_buckle, mob/living/user, var/stand = 0)
-		if (to_buckle != my_king)
-			to_buckle.visible_message("<span class='alert'>[to_buckle] attempts to sit down on the throne but they slip off instead!</span>")
-			ThrowRandom(to_buckle, 3, 1)
-			to_buckle.setStatus("weakened", 2 SECOND)
-			to_buckle.force_laydown_standup()
-			playsound(src.loc, 'sound/misc/slip.ogg', 50, 1, -3)
-			return FALSE
-		..()
-
 /datum/targetable/wrestlemania/summon_peels
 	name = "Command peels"
 	desc = "Exert some of your power to command the universe to form banana peels out of thin air."
@@ -263,4 +250,23 @@
 	name = "Vomit glitter"
 	desc = "AAHHH, IT'S IN MY MOUTH! BLLLAARRFGHGH!"
 	cooldown = 20 SECONDS
-	puke_reagents = list("glitter" = 20, "lumen" = 20)
+	puke_reagents = list("glitter" = 20, "lumen" = 15)
+
+//DIO Chasek stuff
+/datum/targetable/wrestlemania/pie_throw
+	name = "Forbidden pies"
+	desc = "Throw a special pie at some idiot."
+	icon = 'icons/mob/spell_buttons.dmi'
+	icon_state = "lesser"
+	targeted = 1
+	target_anything = 1
+	cooldown = 20 SECONDS
+	var/datum/projectile/pie/chem_ingest/pie_proj = new
+
+	cast(atom/target)
+		var/obj/projectile/P = initialize_projectile_ST(holder.owner, pie_proj, target)
+		if (P)
+			P.mob_shooter = holder.owner
+			P.launch()
+		holder.owner.visible_message("<span class='alert'>[holder.owner] pulls a pie out of [his_or_her(holder.owner)] pockets and lobs it forward!</span>")
+		return FALSE

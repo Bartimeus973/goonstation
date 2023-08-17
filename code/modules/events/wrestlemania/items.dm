@@ -1,3 +1,17 @@
+//Emerald stuff
+/obj/stool/chair/comfy/throne_gold/wrestler
+	var/mob/living/my_king = null
+
+	buckle_in(mob/living/to_buckle, mob/living/user, var/stand = 0)
+		if (to_buckle != my_king)
+			to_buckle.visible_message("<span class='alert'>[to_buckle] attempts to sit down on the throne but they slip off instead!</span>")
+			ThrowRandom(to_buckle, 3, 1)
+			to_buckle.setStatus("weakened", 2 SECOND)
+			to_buckle.force_laydown_standup()
+			playsound(src.loc, 'sound/misc/slip.ogg', 50, 1, -3)
+			return FALSE
+		..()
+
 //Solenoid stuff
 
 //It was simpler to make a reskinned sword which looks and swings like a crowbar than making a crowbar that has a katana dash
