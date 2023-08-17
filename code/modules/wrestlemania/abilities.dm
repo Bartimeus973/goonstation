@@ -137,7 +137,7 @@
 	var/obj/stool/chair/comfy/throne_gold/wrestler/our_throne = null
 
 	cast(atom/target)
-		if (our_throne)
+		if (our_throne && our_throne.loc)
 			holder.owner.visible_message("<span class='notice'>[holder.owner] makes a dismissive gesture and their throne disappears!</span>")
 			leaving_animation(our_throne)
 			SPAWN (3 SECONDS)
