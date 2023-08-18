@@ -255,11 +255,48 @@
 		holder.owner.visible_message("<span class='notice'>[holder.owner] does a little twirl and a MASSIVE cloud of rainbow glitter comes off of them!</span>", "<span class='notice'>You do a little twirl and unleash some of your glitter power!</span>")
 		return FALSE
 
-/datum/targetable/geneticsAbility/bigpuke/glitter
+/datum/targetable/wrestlemania/glitterpuke
 	name = "Vomit glitter"
 	desc = "AAHHH, IT'S IN MY MOUTH! BLLLAARRFGHGH!"
-	cooldown = 20 SECONDS
-	puke_reagents = list("glitter" = 20, "lumen" = 15)
+	icon = 'icons/mob/genetics_powers.dmi'
+	icon_state = "bigpuke"
+	targeted = TRUE
+	target_anything = TRUE
+	max_range = 3
+	cooldown = 5 SECONDS
+
+	cast(atom/target)
+		if (..())
+			return TRUE
+
+		var/turf/T = get_turf(target)
+		var/list/line_turfs = getline(holder.owner, T)
+		var/list/affected_turfs = list()
+		holder.owner.visible_message("<span class='alert'>[holder.owner] horfs up a huge stream of glitter!</span>")
+		playsound(holder.owner.loc, 'sound/misc/meat_plop.ogg', 50, 0)
+		var/turf/currentturf
+		var/turf/previousturf
+		for(var/turf/F in line_turfs)
+			previousturf = currentturf
+			currentturf = F
+			if(currentturf.density || istype(currentturf, /turf/space))
+				break
+			if(previousturf && LinkBlocked(previousturf, currentturf))
+				break
+			affected_turfs += F
+		for(var/turf/F in affected_turfs)
+			if(F.RL_Attached)
+				continue
+			var/datum/color/mycolor = new /datum/color(rand(50, 255), rand(50, 255), rand(50, 255), 230)
+			var/datum/light/light = new /datum/light/point
+			light.enable()
+			light.set_color(mycolor.r / 255, mycolor.g / 255, mycolor.b / 255)
+			light.set_brightness(0.7)
+			light.attach(F)
+			SPAWN(60 SECONDS)
+				qdel(light)
+			make_cleanable(/obj/decal/cleanable/glitter/harmless, F)
+		return FALSE
 
 //DIO Chasek stuff
 /datum/targetable/wrestlemania/pie_throw

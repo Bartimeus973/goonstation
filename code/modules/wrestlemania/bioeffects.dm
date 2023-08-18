@@ -27,9 +27,3 @@
 							C.emote("gasp")
 							C.reagents.add_reagent("glitter", 5)
 							boutput(C, "<span class='alert'>You can taste glitter on your tongue! This stuff is getting <b>EVERYWHERE</b></span>")
-
-/datum/bioEffect/power/bigpuke/glitterpuke
-	name = "Glittery Mass Emesis"
-	id = "acid_bigpuke"
-	ability_path = /datum/targetable/geneticsAbility/bigpuke/glitter
-	cooldown = 20 SECONDS
