@@ -321,30 +321,21 @@
 	name = "Photon warp"
 	desc = "Become pure energy and warp forward!"
 	icon_state = "blink"
-	targeted = 0
+	targeted = 1
+	target_anything = 1
 	cooldown = 1 SECOND
 	restricted_area_check = ABILITY_AREA_CHECK_ALL_RESTRICTED_Z
+	max_range = 3
 	var/blink_range = 3
 
-	cast()
-		var/targetx = holder.owner.x
-		var/targety = holder.owner.y
+	cast(atom/target)
 		var/mob/living/M = holder.owner
 
-		if(holder.owner.dir == 1)
-			targety = holder.owner.y + src.blink_range
-			targetx = holder.owner.x
-		else if(holder.owner.dir == 4)
-			targetx = holder.owner.x + src.blink_range
-			targety = holder.owner.y
-		else if(holder.owner.dir == 2)
-			targety = holder.owner.y - src.blink_range
-			targetx = holder.owner.x
-		else if(holder.owner.dir == 8)
-			targetx = holder.owner.x - src.blink_range
-			targety = holder.owner.y
-
-		var/turf/targetturf = locate(targetx, targety, holder.owner.z)
+		if (!isturf(target))
+			target = get_turf(target)
+		var/turf/targetturf = target
+		if (!istype(targetturf))
+			return TRUE
 
 		if(targetturf.x>world.maxx-4 || targetturf.x<4 || targetturf.y>world.maxy-4 || targetturf.y<4 || !isturf(targetturf))
 			boutput(holder.owner, "<span class='alert'>It's too dangerous to blink there!</span>")
