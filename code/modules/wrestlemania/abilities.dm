@@ -90,6 +90,9 @@
 		if (!isalive(T))
 			boutput("<span class='notice'>They are already sitting down.</span>")
 			return TRUE
+		if (target == holder.owner)
+			boutput(holder.owner, "<span class='notice'>You can't shout at yourself!</span>")
+			return TRUE
 		var/speechpopupstyle = "font-size: 18px;"
 		var/map_text = make_chat_maptext(holder.owner.loc, "SIT DOWN, CLOWN!", "color: [rgb(53, 7, 255)];" + speechpopupstyle, alpha = 255, time = 4 SECONDS)
 		var/list/mob/living/mob_list = list()
@@ -270,6 +273,9 @@
 	var/datum/projectile/pie/chem_ingest/pie_proj = new
 
 	cast(atom/target)
+		if (target == holder.owner)
+			boutput(holder.owner, "<span class='notice'>You can't target yourself!</span>")
+			return TRUE
 		var/obj/projectile/P = initialize_projectile_ST(holder.owner, pie_proj, target)
 		if (P)
 			P.mob_shooter = holder.owner
@@ -291,6 +297,9 @@
 		if (!ishuman(target))
 			boutput(holder.owner, "<span class='notice'>You have to target a human!</span>")
 			return TRUE
+		if (target == holder.owner)
+			boutput(holder.owner, "<span class='notice'>You can't call a hit on yourself!</span>")
+			return TRUE
 		var/mob/living/carbon/human/H = target
 		var/mob/living/critter/human/syndicate/wrestling/reinforcement = new /mob/living/critter/human/syndicate/wrestling(holder.owner.loc)
 		reinforcement.target = H
@@ -304,4 +313,54 @@
 				reinforcement.visible_message("<span class='alert'>[reinforcement] is warped away!</span>")
 				spawn_beam(reinforcement.loc)
 				qdel(reinforcement)
+		return FALSE
+
+//8c2v/Chanic stuff
+//A mix of Ride the lightning/Vampire escape and wizard blink for a flavorful blink forward!
+/datum/targetable/wrestlemania/elec_blink
+	name = "Photon warp"
+	desc = "Become pure energy and warp forward!"
+	icon_state = "blink"
+	targeted = 0
+	cooldown = 1 SECOND
+	restricted_area_check = ABILITY_AREA_CHECK_ALL_RESTRICTED_Z
+	var/blink_range = 3
+
+	cast()
+		var/targetx = holder.owner.x
+		var/targety = holder.owner.y
+		var/mob/living/M = holder.owner
+
+		if(holder.owner.dir == 1)
+			targety = holder.owner.y + src.blink_range
+			targetx = holder.owner.x
+		else if(holder.owner.dir == 4)
+			targetx = holder.owner.x + src.blink_range
+			targety = holder.owner.y
+		else if(holder.owner.dir == 2)
+			targety = holder.owner.y - src.blink_range
+			targetx = holder.owner.x
+		else if(holder.owner.dir == 8)
+			targetx = holder.owner.x - src.blink_range
+			targety = holder.owner.y
+
+		var/turf/targetturf = locate(targetx, targety, holder.owner.z)
+
+		if(targetturf.x>world.maxx-4 || targetturf.x<4 || targetturf.y>world.maxy-4 || targetturf.y<4 || !isturf(targetturf))
+			boutput(holder.owner, "<span class='alert'>It's too dangerous to blink there!</span>")
+			return TRUE
+		//Make some sparks
+		var/obj/effects/sparks/O = new /obj/effects/sparks
+		O.set_loc(holder.owner.loc)
+		SPAWN(2 SECONDS) if (O) qdel(O)
+
+		var/obj/projectile/proj = initialize_projectile_ST(M, new/datum/projectile/special/homing/electric, targetturf)
+		var/tries = 5
+		while (tries > 0 && (!proj || proj.disposed))
+			proj = initialize_projectile_ST(M, new/datum/projectile/special/homing/electric, targetturf)
+
+		proj.special_data["owner"] = M
+		proj.targets = list(targetturf)
+
+		proj.launch()
 		return FALSE

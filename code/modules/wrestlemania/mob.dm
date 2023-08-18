@@ -8,6 +8,7 @@
 	hand_count = 2
 	ai_type = /datum/aiHolder/aggressive
 	var/mob/living/carbon/human/target = null
+	var/no_corpse = TRUE
 
 	post_setup()
 		src.name = "[syndicate_name()] Wrestler"
@@ -40,7 +41,8 @@
 		HH.limb_name = "right arm"
 
 	death(gibbed)
-		. = ..()
-		SPAWN(3 SECONDS)
+		if (src.no_corpse)
 			spawn_beam(src.loc)
 			qdel(src)
+		else
+			. = ..()

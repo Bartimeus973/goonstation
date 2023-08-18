@@ -10,7 +10,7 @@
 
 	OnLife(var/mult)
 		if(..()) return
-		for(var/mob/living/carbon/C in view(3,get_turf(owner)))
+		for(var/mob/living/carbon/C in view(2,get_turf(owner)))
 			if (C == owner)
 				continue
 			else
