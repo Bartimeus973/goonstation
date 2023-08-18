@@ -9,7 +9,7 @@
 			M.change_eye_blurry(5)
 			if (istype(M, /mob/living/carbon))
 				var/mob/living/carbon/C = M
-				if (prob(3)) //AND HERE COMES SENATOR BADMAN WITH THE STEEL BOOTS!
+				if (prob(25)) //AND HERE COMES SENATOR BADMAN WITH THE STEEL BOOTS!
 					C.reagents?.add_reagent("badmanjuice", 10)
 				else
 					C.reagents?.add_reagent(pick(possible_chems), 5)
