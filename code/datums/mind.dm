@@ -17,6 +17,7 @@ datum/mind
 	var/violated_hippocratic_oath = 0
 	var/soul = 100 // how much soul we have left
 	var/diabolical = 0 //are we some sort of demon or other spirit baddie?
+	var/soul_corruption_multiplier = 1 //How fast do we accrue sin? Used by the faustian bargain kit
 
 	var/completed_objs = 0 // completed crew objectives
 	var/all_objs = 0 // for sbux calcs

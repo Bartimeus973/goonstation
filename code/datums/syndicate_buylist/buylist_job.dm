@@ -86,7 +86,7 @@
 
 /datum/syndicate_buylist/traitor/contract
 	name = "Faustian Bargain Kit"
-	items = list(/obj/item/storage/briefcase/satan)
+	items = list(/obj/item/storage/briefcase/faustian)
 	cost = 8
 	desc = "Comes complete with three soul binding contracts, three extra-pointy pens, and one suit provided by Lucifer himself."
 	job = list("Chaplain", "Lawyer")
@@ -94,10 +94,10 @@
 	vr_allowed = FALSE
 	can_buy = UPLINK_TRAITOR | UPLINK_SPY
 
-	run_on_spawn(var/obj/item/storage/briefcase/satan/Q,var/mob/living/owner, in_surplus_crate)
+	run_on_spawn(var/obj/item/storage/briefcase/faustian/Q,var/mob/living/owner, in_surplus_crate)
 		if (istype(Q) && owner)
-			owner.make_merchant() //give them the power to summon more contracts
-			Q.set_merchant(owner)
+			owner.make_faustian()
+			Q.set_faustian_owner(owner)
 			owner.mind.diabolical = 1 //can't sell souls to ourselves now can we?
 		..()
 

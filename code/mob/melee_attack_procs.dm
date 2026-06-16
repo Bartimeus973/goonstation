@@ -1212,6 +1212,11 @@
 /mob/living/check_attack_resistance(var/obj/item/I, var/mob/attacker)
 	if (reagents?.get_reagent_amount("ethanol") >= 100 && prob(40) && !I)
 		return SPAN_ALERT("You drunkenly shrug off the blow!")
+	if (src.mind && attacker.mind)
+		//Fighting a demonic lawyer after you sold your soul to them is doable, but its a seriously uphill battle
+		if (attacker.mind.soul < 100 && ishuman(src) && istype(src:w_uniform, /obj/item/clothing/under/misc/lawyer/red/demonic) && src.mind.diabolical)
+			var/dmg_multiplier = round(0.85 - (0.4 - (0.4 * attacker.mind.soul / 100)), 0.05) //Between 15% to around 55% base dmg reduction.
+			return dmg_multiplier
 	return null
 
 /mob/proc/get_melee_protection(zone, damage_type = 0)

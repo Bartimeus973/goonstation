@@ -1,13 +1,3 @@
-/*
-TODO: YETI MOB CRITTER, MAYBE? DUNNO.
-TODO: MIGRATE MORE GENETIC EFFECTS INTO TRAITS
-TODO: MAYBE ADD MORE?
-TODO: MAYBE MIGRATE INTO USING MORE DATUMS?
-TODO: USE COMPONENTS TO HANDLE SOUL COUNT FOR THE SCALING ITEMS??? (IS THIS NECESSARY?)
-Whatever, it's been cleaned up a lot and it's no longer quite so awful.
-*/
-
-
 /proc/soulbuff(var/obj/item/to_buff)
 	if(!to_buff)
 		return 0

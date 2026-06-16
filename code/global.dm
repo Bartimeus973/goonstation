@@ -319,7 +319,7 @@ var/global
 
 	datum/titlecard/lobby_titlecard
 
-	total_souls_sold = 0
+	total_souls_sold = 0 //WHY IS THIS GLOBAL? Fix this.
 	total_souls_value = 0
 
 	///////////////
