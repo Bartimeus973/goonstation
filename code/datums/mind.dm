@@ -19,6 +19,7 @@ datum/mind
 	var/diabolical = 0 //are we some sort of demon or other spirit baddie?
 	var/soul_corruption_multiplier = 1 //How fast do we accrue sin? Used by the faustian bargain kit
 	var/soul_claimed = FALSE //Has our soul already been claimed? Used by the faustian bargain kit
+	var/contracts_signed = 0 // How many contracts have we signed? Used by the faustian bargain kit
 
 	var/completed_objs = 0 // completed crew objectives
 	var/all_objs = 0 // for sbux calcs

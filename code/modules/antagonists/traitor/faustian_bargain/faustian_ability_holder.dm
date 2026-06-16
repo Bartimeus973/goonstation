@@ -3,11 +3,13 @@
 	regenRate = 0
 	pointName = "Souls"
 	notEnoughPointsMessage = SPAN_ALERT("You need more souls to use this ability!")
+	var/soul_power = 0
 
 	onAbilityStat() // In the "Souls" tab.
 		..()
 		.= list()
 		.["Souls:"] = src.points
+		.["Total Soul Power:"] = src.soul_power
 		return
 
 /atom/movable/screen/ability/topBar/faustian

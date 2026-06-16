@@ -190,13 +190,22 @@ ABSTRACT_TYPE(/obj/item/faustian_contract)
 				if (C.is_npc)
 					boutput(user, SPAN_NOTICE("Despite your best efforts [target] refuses to sell you [his_or_her(target)] soul!"))
 					return
+			if (target.mind?.soul_claimed)
+				boutput(user, SPAN_NOTICE("You have already claimed this one's soul. There is no reason to give them a contract. No free handouts."))
+				return
 		/*
+			Todo increment contracts signed on mind
+			Reset sin also for contract stacking
+
 			if (src.inuse != 1)
 				actions.start(new/datum/action/bar/icon/force_sign(user, target, src), user)
 */
 
 	attackby(obj/item/W, mob/user)
 		if (istype(W, /obj/item/pen))
+			if (user.mind?.soul_claimed)
+				boutput(user, SPAN_NOTICE("The contract rejects you. It asks for a soul but you have none to give."))
+				return
 			if (isdiabolical(user))
 				boutput(user, SPAN_NOTICE("You can't sell your soul to yourself!"))
 				return
