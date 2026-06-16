@@ -7,8 +7,7 @@
 	onAbilityStat() // In the "Souls" tab.
 		..()
 		.= list()
-		.["Souls:"] = total_souls_value
-		.["Total Collected:"] = total_souls_sold
+		.["Souls:"] = src.points
 		return
 
 /atom/movable/screen/ability/topBar/faustian
