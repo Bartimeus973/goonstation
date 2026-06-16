@@ -22,10 +22,10 @@
 				take_bleeding_damage(C, null, (8 - round(8 * soul_multiplier)), DAMAGE_STAB)
 				random_brute_damage(C, 1 + (7 - round(7 * soul_multiplier)))
 				random_burn_damage(C, 1 + (7 - round(7 * soul_multiplier)))
-				C.changeStatus("knockdown", (1.5 SECONDS + (5 - round(5 * soul_multiplier)))) // 1.5 second baseline, scaling up to a maximum of 6.5 seconds at max sin
+				C.changeStatus("knockdown", (3.5 SECONDS + (4 - round(4 * soul_multiplier)))) // 3.5 second baseline, scaling up to a maximum of 6.5 seconds at max sin
 				boutput(C, SPAN_ALERT("The pen lodges itself into your flesh, searing it! Your mind goes blank for a moment!"))
 			else
-				C.changeStatus("knockdown", (1.5 SECONDS))
+				C.changeStatus("knockdown", (3.5 SECONDS))
 			take_bleeding_damage(C, null, 15, DAMAGE_STAB)
 		..()
 
