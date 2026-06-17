@@ -58,18 +58,17 @@
 
 	New()
 		..()
-		//Todo rewrite this
 		info = {"<center><b>SO YOU WANT TO STEAL SOULS?</b></center><ul>
-			<li>Step One: Grab a complimentary extra-sharp demonic pen and your infernal contract of choice from your devilish briefcase.</li>
-			<li>Step Two: Present your contract to your victim by clicking on them with said contract, but be sure you have your hellish writing utensil handy in your other hand!</li>
-			<li>Step Three: It takes about four seconds for you to force your victim to sign their name, be sure not to move during this process or the ink will smear!</li></ul>
+			<li>Step One: Grab a complimentary extra-sharp demonic pen and a blank infernal contract from your devilish briefcase.</li>
+			<li>Step Two: Use your fiendish quill to write up a new contract. Feel free to make the first ones a little more generous so they get a taste for sin. You can rewrite a contract by using your pen on it again.</li>
+			<li>Step Three: Present your contract to your victim by clicking on them with said contract, but be sure you have your hellish writing utensil handy in your other hand!</li>
+			<li>Step Four: It takes a couple seconds for you to force your victim to sign their name, be sure not to move during this process or the ink will smear! The worse the contract, the longer it will take!</li>
+			<li>Step Five: After some time has passed, and the victim has enjoyed a taste of devilish delights, brutally murder them and claim their soul!</li>
+			<li>You may also make them sign additional contracts instead. This buys them a bit of time and their soul will be worth a lot more! But as some point, you need to collect your due.</li></ul>
 			<b>Alternatively, you can just have people sign the contract willingly, but where's the fun in that?</b>
-			<li>Your contracts are written in legalese, so anyone not wearing your lawyer suit is unable to read them!</li>
 			<li>Your lawyer suit, in addition to looking stylish, doubles as a suit of body armor. Similarly, your briefcase is a great bludgeoning tool, and your pens make excellent throwing daggers.</li>
-			<li>As you collect more souls, your briefcase and pens will grow stronger and will gain unique powers.</li>
-			<li>You can expend [CONTRACT_COST] collected souls to summon another major contract, but your weapons will weaken as a result.</li>
-			<li>To do so, click on the Summon Contract ability under the tab labeled Souls. Alternatively, right click on your briefcase while holding it in your hand and then select the option labelled Summon Contract.</li>
-			<b><li>Oh, and if you ever find something that talks about horses, use it in your hand. Just trust your old pal Nick on this one.</li></b>"}
+			<li>Someone who has signed a contract is going to be weaker and weaker against you over time, until a swift strike with your briefcase is enough to shatter their fragile body.</li>
+			<b><li>Do well and you'll be rewarded with a taste of hell's powers. Do poorly and you'll roast in hell in place of the souls you could have collected. Just kidding! You'll burn no matter what but try to enjoy the ride!</li></b>"}
 
 
 /obj/item/storage/briefcase/faustian

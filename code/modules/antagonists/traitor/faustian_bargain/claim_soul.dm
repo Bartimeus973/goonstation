@@ -38,7 +38,7 @@
 		var/datum/mind/mind_to_claim
 		if (H.mind)
 			mind_to_claim = H.mind
-		else if (H.client)
+		else if (H.client && H.client.mob && H.client.mob.mind)
 			mind_to_claim = H.client.mob.mind
 		else if (H.ghost && (H.ghost.mind || H.ghost.client))
 			var/mob/dead/ghost = H.ghost

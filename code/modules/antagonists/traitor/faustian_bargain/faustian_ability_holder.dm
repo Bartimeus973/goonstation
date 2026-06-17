@@ -13,29 +13,6 @@
 		return
 
 /atom/movable/screen/ability/topBar/faustian
-//Possibly remove all this?
-	clicked(params)
-		var/datum/targetable/faustian/spell = owner
-		if (!istype(spell))
-			return
-		if (!spell.holder)
-			return
-		if (!isturf(owner.holder.owner.loc))
-			boutput(owner.holder.owner, SPAN_ALERT("You can't use this ability here."))
-			return
-		if (spell.targeted && usr.targeting_ability == owner)
-			usr.targeting_ability = null
-			usr.update_cursor()
-			return
-		if (spell.targeted)
-			if (world.time < spell.last_cast)
-				return
-			owner.holder.owner.targeting_ability = owner
-			owner.holder.owner.update_cursor()
-		else
-			SPAWN(0)
-				spell.handleCast()
-		return
 
 /mob/proc/make_faustian()
 	if (ishuman(src))

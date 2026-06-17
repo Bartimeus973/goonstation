@@ -350,6 +350,10 @@
 		if (src.organHolder?.chest?.op_stage > 0 && !src.chest_cavity_clamped && prob(10)) //Going around with a gaping unsutured wound is a bad idea
 			take_bleeding_damage(src, null, rand(5, 10))
 
+		//Faustian bargain stuff
+		if (src.mind?.contracts_signed > 0)
+			src.mind.soul -= (src.mind.soul_corruption_multiplier * mult) / 3 // About 10 minutes to go to 0 with one easy contract signed
+
 	last_human_life_tick = TIME
 
 /mob/living/critter/Life(datum/controller/process/mobs/parent)
