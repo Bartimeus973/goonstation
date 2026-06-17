@@ -36,9 +36,9 @@
 					return TRUE
 				else
 					boutput(M, SPAN_ALERT("The smell of hot leather fills your mind as your manifest another infernal briefcase from nothing."))
-					var/obj/item/storage/briefcase/faustian/N = new /obj/item/storage/briefcase/faustian(get_turf(M))
-					N.faustian_key = M.mind?.key
-					M.put_in_hand_or_drop(N)
+					var/obj/item/storage/briefcase/faustian/new_case = new /obj/item/storage/briefcase/faustian(get_turf(M))
+					new_case.faustian_key = M.mind?.key
+					M.put_in_hand_or_drop(new_case)
 					return FALSE
 
 			if (1)

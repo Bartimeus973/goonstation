@@ -133,38 +133,59 @@ ABSTRACT_TYPE(/obj/item/faustian_contract)
 	flags = TABLEPASS
 	w_class = W_CLASS_SMALL
 	burn_possible = FALSE //Only makes sense since it's from hell.
-	var/faustian_key = null
+	var/faustian_key = null //Who's our master?
+	var/corruption_multiplier = 0 //How fast do we increase one's soul corruption once we are signed
+	var/force_duration = 4 SECONDS //How long does it take to force someone to sign us
 	HELP_MESSAGE_OVERRIDE({"Use your demonic pen on the contract to write a new contract.
 							Use the written contract on a human with your demonic pen in the other hand to force them to sign it.
 							They may also sign the contract by themselves by using the pen on the contract.
 							Contracts with no drawbacks quickly corrupts the person's soul. Contracts with a small drawback corrupt slower. Contracts with no benefits generate very little corruption."})
 
-/*
-	examine(mob/user)
-		if ((ishuman(user) && istype(user:w_uniform, /obj/item/clothing/under/misc/lawyer/red/demonic)) || isobserver(user))
-			return ..()
-		else
-			return list("A strange piece of old crinkled paper, covered in mysterious gibberish legalese.")
-		proc/MagicEffect(var/mob/user as mob, var/mob/badguy as mob) //this calls the actual contract effect
-		if (!user)
-			return 0
-		if (isdiabolical(user))
-			boutput(user, SPAN_NOTICE("You can't sell your soul to yourself!"))
-			return 0
-		boutput(user, SPAN_ALERT(SPAN_BOLD("The pen stabs into your hand as you start to sign, your blood trickling down onto the page.")))
-		src.visible_message(SPAN_ALERT("<b>[user] signs [his_or_her(user)] name in [his_or_her(user)] own blood upon [src]!</b>"))
-		take_bleeding_damage(user, user, 4, DAMAGE_STAB, TRUE)
-		logTheThing(LOG_ADMIN, user, "signed a [src.type] contract at [log_loc(user)]!")
-		. = user.sell_soul(100, 0, 1)
-		if(!.)
-			boutput(badguy, "[user] signed [src] but had no soul to give!")
-*/
+	New(atom/location, owner = null)
+		src.set_loc(location)
+		src.faustian_key = owner
+		..()
+
 	proc/vanish(var/mob/user, var/mob/badguy)
 		if(user)
 			boutput(user, SPAN_NOTICE("<b>The depleted contract vanishes in a puff of smoke!</b>"))
 		playsound(src.loc, pick('sound/voice/creepywhisper_1.ogg', 'sound/voice/creepywhisper_2.ogg', 'sound/voice/creepywhisper_3.ogg'), 50, 1)
 		SPAWN(1 DECI SECOND)
 			qdel(src)
+
+	proc/do_evil_wish(var/mob/user)
+		return
+
+	proc/sign_contract(var/mob/user)
+		if (user.mind)
+			user.mind.contracts_signed ++
+			user.mind.soul_corruption_multiplier += corruption_multiplier
+			//Signing a new contract buys you a bit of time before the chaplain comes to collect
+			user.mind.soul = 100
+		//Spawn a new contract in the briefcase
+		var/obj/item/storage/briefcase/faustian/the_briefcase = null
+		var/turf/T = get_turf(user)
+		var/obj/item/faustian_contract/blank/new_contract = new/obj/item/faustian_contract/blank(T, src.faustian_key)
+		for_by_tcl(K, /obj/item/storage/briefcase/faustian)
+			if (src.faustian_key == K.faustian_key)
+				the_briefcase = K
+				break
+		if (the_briefcase && (length(the_briefcase.contents) < the_briefcase.slots))
+			the_briefcase.storage.add_contents(new_contract)
+		else
+			new_contract.set_loc(T)
+		boutput(user, SPAN_ALERT(SPAN_BOLD("The pen stabs into your hand as you start to sign, your blood trickling down onto the page.")))
+		src.visible_message(SPAN_ALERT("<b>[user] signs [his_or_her(user)] name in [his_or_her(user)] own blood upon [src]!</b>"))
+		take_bleeding_damage(user, user, 4, DAMAGE_STAB, TRUE)
+		logTheThing(LOG_ADMIN, user, "signed a [src.type] contract at [log_loc(user)]!")
+
+	proc/rewrite_contract(var/mob/user)
+		var/turf/T = get_turf(user)
+		var/obj/item/faustian_contract/blank/new_contract = new/obj/item/faustian_contract/blank(T, src.faustian_key)
+		if (istype(src.loc, /mob))
+			user.drop_item(src)
+		user.put_in_hand_or_drop(new_contract)
+		qdel(src)
 
 	attack(mob/target, mob/user, def_zone, is_special = FALSE, params = null)
 		if (!isliving(target) || isghostdrone(target) || issilicon(target) || isintangible(target))
@@ -190,32 +211,154 @@ ABSTRACT_TYPE(/obj/item/faustian_contract)
 				if (C.is_npc)
 					boutput(user, SPAN_NOTICE("Despite your best efforts [target] refuses to sell you [his_or_her(target)] soul!"))
 					return
-			if (target.mind?.soul_claimed)
+			if (!target.mind)
+				boutput(user, SPAN_NOTICE("They do not appear to have a mind... Somehow."))
+				return
+			if (target.mind.soul_claimed)
 				boutput(user, SPAN_NOTICE("You have already claimed this one's soul. There is no reason to give them a contract. No free handouts."))
 				return
-		/*
-			Todo increment contracts signed on mind
-			Reset sin also for contract stacking
-
-			if (src.inuse != 1)
-				actions.start(new/datum/action/bar/icon/force_sign(user, target, src), user)
-*/
+			if ((target.mind.contracts_signed > 0) && istype(src, /obj/item/faustian_contract/beneficial))
+				boutput(user, SPAN_ALERT("This one already tasted of our unearthly delights. Give them a contract more weighted in hell's favor."))
+				return
+			if (istype(src, /obj/item/faustian_contract/blank))
+				boutput(user, SPAN_ALERT("There's nothing to sign! This contract is blank! Use one of your demonic pens on the contract to write up a new one."))
+				return
+			if (target.mind.contracts_signed >= 4)
+				boutput(user, SPAN_ALERT("[target.name] is a truly wretched creature. Their soul is already damned to the deepest pits of hell. Claim your due off their corpse."))
+				return
+			if (GET_COOLDOWN(target, "sign devil contract"))
+				boutput(user, SPAN_ALERT("[target.name] just signed a contract. Give them a little time for their soul to spoil before they sign more."))
+				return
+			actions.start(new/datum/action/bar/icon/force_faustian_contract(user, target, src), user)
 
 	attackby(obj/item/W, mob/user)
 		if (istype(W, /obj/item/pen))
-			if (user.mind?.soul_claimed)
+			if (!user.mind)
+				boutput(user, SPAN_NOTICE("You do not have a mind... Somehow."))
+			if (user.mind.soul_claimed)
 				boutput(user, SPAN_NOTICE("The contract rejects you. It asks for a soul but you have none to give."))
 				return
-			if (isdiabolical(user))
-				boutput(user, SPAN_NOTICE("You can't sell your soul to yourself!"))
+			if (!isliving(user) || isghostdrone(user) || issilicon(user))
 				return
-			else if (!isliving(user) || isghostdrone(user) || issilicon(user))
-				return
-			else if (istype(W, /obj/item/pen/fancy/faustian))
-				//MagicEffect(user, src.merchant)
-				return
-			else
+			if (!istype(W, /obj/item/pen/fancy/faustian))
 				user.visible_message(SPAN_ALERT("<b>[user] looks puzzled as [he_or_she(user)] realizes [his_or_her(user)] pen isn't evil enough to sign [src]!</b>"))
 				return
+			if (isdiabolical(user))
+				rewrite_contract(user)
+				return
+			if ((user.mind.contracts_signed > 0) && istype(src, /obj/item/faustian_contract/beneficial))
+				boutput(user, SPAN_ALERT("It seems that this contract rejects you as it was meant for someone less sinful than you."))
+				return
+			if (istype(src, /obj/item/faustian_contract/blank))
+				boutput(user, SPAN_ALERT("There's nothing to sign! This contract is blank!"))
+				return
+			if (user.mind.contracts_signed >= 4)
+				boutput(user, SPAN_ALERT("The ink refuses to stay on the contract. It seems there is nothing left for you to sell. You feel hollow."))
+				return
+			if (ON_COOLDOWN(user, "sign devil contract", 5 MINUTES))
+				boutput(user, SPAN_ALERT("The pen refuses to work. It seems you signed a contract too recently to sign another."))
+				return
+			sign_contract(user)
+			do_evil_wish(user)
+			src.vanish()
+
+/datum/action/bar/icon/force_faustian_contract
+	var/mob/living/target
+	var/obj/item/faustian_contract/my_contract
+	interrupt_flags = INTERRUPT_MOVE | INTERRUPT_ACT | INTERRUPT_STUNNED | INTERRUPT_ACTION
+	duration = 4 SECONDS
+
+	New(owner, target, contract)
+		. = ..()
+		src.owner = owner
+		src.target = target
+		src.my_contract = contract
+		icon = my_contract.icon
+		icon_state = my_contract.icon_state
+		src.duration = src.my_contract.force_duration
+
+	onStart()
+		. = ..()
+		if (!isliving(target) || isghostdrone(target) || issilicon(target) || isintangible(target))
+			interrupt(INTERRUPT_ALWAYS)
+			return
+		if (ismobcritter(target))
+			var/mob/living/critter/C = target
+			if (C.is_npc)
+				interrupt(INTERRUPT_ALWAYS)
+				return
+		if (BOUNDS_DIST(owner, target) > 0 || target == null || owner == null || my_contract == null)
+			interrupt(INTERRUPT_ALWAYS)
+			return
+		var/mob/living/user = owner
+		if (!user.find_type_in_hand(/obj/item/pen/fancy/faustian))
+			interrupt(INTERRUPT_ALWAYS)
+			return
+		target.visible_message(SPAN_ALERT("<B>[owner] is guiding [target]'s hand to the signature field of [my_contract]!</B>"))
+
+	onUpdate()
+		..()
+		if (BOUNDS_DIST(owner, target) > 0 || target == null || owner == null || my_contract == null)
+			interrupt(INTERRUPT_ALWAYS)
+			return
+		var/mob/living/user = owner
+		if (!user.find_type_in_hand(/obj/item/pen/fancy/faustian))
+			interrupt(INTERRUPT_ALWAYS)
+			return
+
+	onInterrupt(flag)
+		. = ..()
+		var/mob/living/user = owner
+		boutput(user, SPAN_ALERT("You were interrupted!"))
+
+	onEnd()
+		. = ..()
+		target.visible_message(SPAN_ALERT("[owner] forces [target] to sign [my_contract]!"))
+		logTheThing(LOG_COMBAT, owner, "forces [target] to sign a [my_contract] at [log_loc(owner)].")
+		my_contract.sign_contract(target)
+		my_contract.do_evil_wish(target)
+		ON_COOLDOWN(target, "sign devil contract", 5 MINUTES)
+		my_contract.vanish()
 
 /obj/item/faustian_contract/blank
+	name = "Blank infernal contract"
+	corruption_multiplier = 0
+	force_duration = INFINITY
+
+	//todo
+	rewrite_contract(mob/user)
+		return
+
+ABSTRACT_TYPE(/obj/item/faustian_contract/beneficial)
+/obj/item/faustian_contract/beneficial
+	corruption_multiplier = 0.8
+	force_duration = 1.5 SECONDS
+
+/obj/item/faustian_contract/beneficial/test
+
+ABSTRACT_TYPE(/obj/item/faustian_contract/mixed)
+/obj/item/faustian_contract/mixed
+	corruption_multiplier = 0.4
+	force_duration = 3 SECONDS
+
+	var/legal_description = "Placeholder"
+
+	examine(mob/user)
+		if ((ishuman(user) && istype(user:w_uniform, /obj/item/clothing/under/misc/lawyer/red/demonic)) || isobserver(user))
+			return ..()
+		else
+			return legal_description
+
+/obj/item/faustian_contract/mixed/test
+
+ABSTRACT_TYPE(/obj/item/faustian_contract/dangerous)
+/obj/item/faustian_contract/dangerous
+	corruption_multiplier = 0.1
+	force_duration = 5 SECONDS
+
+	examine(mob/user)
+		if ((ishuman(user) && istype(user:w_uniform, /obj/item/clothing/under/misc/lawyer/red/demonic)) || isobserver(user))
+			return ..()
+		else
+			return list("A strange piece of old crinkled paper, covered in mysterious gibberish legalese. These is something very ominous about this contract.")
+
